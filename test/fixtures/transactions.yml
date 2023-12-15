@@ -1,0 +1,17 @@
+sample_transaction1:
+  id: "cc24b843-9452-4abc-b505-1491a645e001"
+  user_id: "1f1d5dbb-b8dc-4510-80bb-a07823b09001"
+  date: "2023-12-01T10:00:00Z"
+  country: "SE"
+  currency: "EUR"
+  account_id: "fc1d22c0-0d49-45ad-851e-ad7ab8160001"
+  merchant_id: "a8a1ccc9-ad5d-47d2-a7f9-f14deeeaa001"
+
+sample_transaction2:
+  id: "cc24b843-9452-4abc-b505-1491a645e002"
+  user_id: "1f1d5dbb-b8dc-4510-80bb-a07823b09001"
+  date: "2023-12-01T12:00:00Z"
+  country: "RS"
+  currency: "RSD"
+  account_id: "fc1d22c0-0d49-45ad-851e-ad7ab8160001"
+  merchant_id: "a8a1ccc9-ad5d-47d2-a7f9-f14deeeaa001"

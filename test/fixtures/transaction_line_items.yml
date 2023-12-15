@@ -1,0 +1,14 @@
+sample_line_item1:
+  owner_transaction_id: "cc24b843-9452-4abc-b505-1491a645e002"
+  product_id: "14e057e3-e346-4424-b866-5eb55a955001"
+  quantity_pieces: 3
+  price_cents: 1000
+  total_price_cents: 3000
+
+sample_line_item2:
+  owner_transaction_id: "cc24b843-9452-4abc-b505-1491a645e002"
+  product_id: "14e057e3-e346-4424-b866-5eb55a955002"
+  quantity_weighted: 2.5
+  price_cents: 2000
+  discounted_price_cents: 1600
+  total_price_cents: 4000
