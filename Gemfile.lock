@@ -88,6 +88,8 @@ GEM
     debug (1.8.0)
       irb (>= 1.5.0)
       reline (>= 0.3.1)
+    dockerfile-rails (1.5.14)
+      rails (>= 3.0.0)
     drb (2.2.0)
       ruby2_keywords
     erubi (1.12.0)
@@ -222,6 +224,7 @@ DEPENDENCIES
   bcrypt (~> 3.1.12)
   bootsnap
   debug
+  dockerfile-rails (>= 1.5)
   graphiql-rails (~> 1.9)
   graphql (~> 2.1)
   pg (~> 1.1)
