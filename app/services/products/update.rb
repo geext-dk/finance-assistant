@@ -9,9 +9,15 @@ module Products
     end
 
     def call
-      product = Products::Repository.get(@product_id, user_id: user.id)
+      product = capture_not_found(@product_id, Constants::PRODUCT_TYPE_NAME) do
+        Product.existing.for_user(user.id).find(@product_id)
+      end
 
-      Products::Repository.update(product, :name => @name)
+      unless product.update(name: @name)
+        raise ApplicationError.new("Couldn't update product '#{@product_id}'", product.errors.full_messages)
+      end
+
+      product
     end
   end
 end

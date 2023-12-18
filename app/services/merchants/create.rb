@@ -9,7 +9,7 @@ module Merchants
     end
 
     def call
-      Merchants::Repository.create(name: @name, country: @country, user_id: user.id)
+      Merchant.create(name: @name, country: @country, user_id: user.id)
     end
   end
 end

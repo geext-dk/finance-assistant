@@ -8,7 +8,8 @@ module Accounts
 
     def call
       logger.debug "Getting a list of accounts for user #{user.id}"
-      Accounts::Repository.list(user_id: user.id)
+
+      Account.existing.for_user(user.id)
     end
   end
 end

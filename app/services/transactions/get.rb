@@ -8,9 +8,10 @@ module Transactions
       @transaction_id = transaction_id
     end
 
-    # @return [Transaction]
     def call
-      Repository.get(@transaction_id, user_id: user.id)
+      capture_not_found(@transaction_id, Constants::TRANSACTION_TYPE_NAME) do
+        Transaction.for_user(user.id).find(@transaction_id)
+      end
     end
   end
 end

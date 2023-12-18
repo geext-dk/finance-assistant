@@ -20,7 +20,9 @@ module Transactions
 
     # @return [Transaction]
     def call
-      transaction = Repository.get(@transaction_id, user_id: user.id)
+      transaction = capture_not_found(@transaction_id, Constants::TRANSACTION_TYPE_NAME) do
+        Transaction.includes(:line_items).for_user(user.id).find(@transaction_id)
+      end
 
       if transaction.line_items.find_by(product_id: @product_id)
         raise ApplicationError.new(
@@ -28,7 +30,9 @@ module Transactions
         )
       end
 
-      product = Products::Repository.get(@product_id, user_id: user.id)
+      product = capture_not_found(@product_id, Products::Constants::PRODUCT_TYPE_NAME) do
+        Product.existing.for_user(user.id).find(@product_id)
+      end
 
       fraction_digits = Common::CurrencyHelper.get_fraction_digits
 
@@ -40,8 +44,7 @@ module Transactions
           quantity_pieces: product.per_piece? ? @quantity.to_i : nil,
           price_cents: (@price * (10 ** fraction_digits)).to_i,
           discounted_price_cents: @discounted_price ? (@discounted_price * (10 ** fraction_digits)).to_i : nil,
-          total_price_cents: (@total_price * (10 ** fraction_digits)).to_i,
-          )
+          total_price_cents: (@total_price * (10 ** fraction_digits)).to_i)
 
         if new_line_item.valid?
           transaction

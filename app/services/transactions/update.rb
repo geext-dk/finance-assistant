@@ -9,9 +9,17 @@ module Transactions
     end
 
     def call
-      transaction = Repository.get(@transaction_id, user_id: user.id)
+      transaction = capture_not_found(@transaction_id, Constants::TRANSACTION_TYPE_NAME) do
+        Transaction.for_user(user.id).find(@transaction_id)
+      end
 
-      Repository.update(transaction, { :date => @date })
+      unless transaction.update(date: @date)
+        raise ApplicationError.new(
+          "Couldn't update transaction '#{@transaction_id}'",
+          transaction.errors.full_messages)
+      end
+
+      transaction
     end
   end
 end

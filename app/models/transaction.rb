@@ -1,5 +1,8 @@
 class Transaction < ApplicationRecord
+  include UserOwned
+
   belongs_to :user
+
   belongs_to :merchant
   belongs_to :account
   has_many :line_items, class_name: "TransactionLineItem", foreign_key: :owner_transaction_id

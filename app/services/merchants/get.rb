@@ -8,7 +8,9 @@ module Merchants
     end
 
     def call
-      Merchants::Repository.get(@merchant_id, user_id: user.id)
+      capture_not_found(@merchant_id, Constants::MERCHANT_TYPE_NAME) do
+        Merchant.existing.for_user(user.id).find(@merchant_id)
+      end
     end
   end
 end

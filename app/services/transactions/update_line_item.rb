@@ -14,7 +14,9 @@ module Transactions
 
     # @return [Transaction]
     def call
-      transaction = Repository.get(@transaction_id, user_id: user.id)
+      transaction = capture_not_found(@transaction_id, Constants::TRANSACTION_TYPE_NAME) do
+        Transaction.includes(:line_items).for_user(user.id).find(@transaction_id)
+      end
 
       line_item = transaction.line_items.find_by(product_id: @product_id)
 
@@ -22,19 +24,20 @@ module Transactions
         raise ApplicationError.new("Transaction #{@transaction_id} already has no line item for product #{@product_id}")
       end
 
-      product = Products::Repository.get(@product_id, user_id: user.id)
+      # TODO cover case when a product is archived but it wasn't changed - it should work but it won't
+      product = capture_not_found(@product_id, Products::Constants::PRODUCT_TYPE_NAME) do
+        Product.existing.for_user(user.id).find(@product_id)
+      end
 
       fraction_digits = Common::CurrencyHelper.get_fraction_digits
 
       begin
-        result = Repository.update_line_item(
-          line_item,
+        result = line_item.update(
           quantity_weighted: product.per_piece? ? nil : @quantity,
           quantity_pieces: product.per_piece? ? @quantity.to_i : nil,
           price_cents: (@price * (10 ** fraction_digits)).to_i,
           discounted_price_cents: (@discounted_price * (10 ** fraction_digits)).to_i,
-          total_price_cents: (@total_price * (10 ** fraction_digits)).to_i,
-          )
+          total_price_cents: (@total_price * (10 ** fraction_digits)).to_i)
 
         if result
           transaction

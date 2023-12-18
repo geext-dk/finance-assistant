@@ -8,9 +8,13 @@ module Products
     end
 
     def call
-      product = Products::Repository.get(@product_id, user_id: user.id)
+      product = Product.existing.for_user(user.id).find(@product_id)
 
-      Products::Repository.update(product, archived_at: Time.now.utc)
+      product.archive
+
+      product
+    rescue ActiveRecord::RecordNotFound
+      raise NotFoundError.new(@merchant_id, Constants::PRODUCT_TYPE_NAME)
     end
   end
 end

@@ -8,9 +8,13 @@ module Merchants
     end
 
     def call
-      merchant = Merchants::Repository.get(@merchant_id, user_id: user.id)
+      merchant = capture_not_found(@merchant_id, Constants::MERCHANT_TYPE_NAME) do
+        Merchant.existing.for_user(user.id).find(@merchant_id)
+      end
 
-      Merchants::Repository.update(merchant, { archived_at: Time.now.utc })
+      merchant.archive
+
+      merchant
     end
   end
 end

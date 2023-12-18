@@ -49,5 +49,9 @@ group :development do
   # gem "spring"
 end
 
+group :test do
+  gem 'minitest-stub-const', '~> 0.6'
+end
+
 
 gem "dockerfile-rails", ">= 1.5", :group => :development

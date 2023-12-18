@@ -9,7 +9,13 @@ module Accounts
     end
 
     def call
-      Accounts::Repository.create(name: @name, currency: @currency, user_id: user.id)
+      account = Account.create(name: @name, currency: @currency, user_id: user.id)
+
+      unless account.valid?
+        raise ApplicationError.new("Couldn't create account", account.errors.full_messages)
+      end
+
+      account
     end
   end
 end

@@ -10,7 +10,7 @@ module Products
     end
 
     def call
-      Products::Repository.create(name: @name, country: @country, quantity_type: @quantity_type, user_id: user.id)
+      Product.create(name: @name, country: @country, quantity_type: @quantity_type, user_id: user.id)
     end
   end
 end

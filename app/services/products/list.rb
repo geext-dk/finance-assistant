@@ -6,7 +6,7 @@ module Products
       super(user)
     end
     def call
-      Products::Repository.list(user_id: user.id)
+      Product.existing.for_user(user.id)
     end
   end
 end

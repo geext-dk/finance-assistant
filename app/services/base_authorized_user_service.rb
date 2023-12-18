@@ -19,6 +19,6 @@ class BaseAuthorizedUserService < BaseApplicationService
       raise ApplicationError.new("The user is not authorized to perform this operation")
     end
 
-    new(*args, user: user, **kwargs, &block).call
+    super
   end
 end

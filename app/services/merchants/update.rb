@@ -9,9 +9,15 @@ module Merchants
     end
 
     def call
-      merchant = Merchants::Repository.get(@merchant_id, user_id: user.id)
+      merchant = capture_not_found(@merchant_id, Constants::MERCHANT_TYPE_NAME) do
+        Merchant.existing.for_user(user.id).find(@merchant_id)
+      end
 
-      Merchants::Repository.update(merchant, :name => @name)
+      unless merchant.update(name: @name)
+        raise ApplicationError.new("Couldn't update merchant '#{@merchant_id}'", merchant.errors.full_messages)
+      end
+
+      merchant
     end
   end
 end

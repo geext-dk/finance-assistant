@@ -8,7 +8,7 @@ module Transactions
 
     # @return [ActiveRecord::Relation<Transaction>]
     def call
-      Repository.list(user_id: user.id)
+      Transaction.for_user(user.id)
     end
   end
 end

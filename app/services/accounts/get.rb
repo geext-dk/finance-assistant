@@ -8,7 +8,9 @@ module Accounts
     end
 
     def call
-      Accounts::Repository.get(@account_id, user_id: user.id)
+      capture_not_found(@account_id, Constants::ACCOUNT_TYPE_NAME) do
+        Account.existing.for_user(user.id).find(@account_id)
+      end
     end
   end
 end

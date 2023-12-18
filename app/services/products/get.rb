@@ -8,7 +8,9 @@ module Products
     end
 
     def call
-      Products::Repository.get(@product_id, user_id: user.id)
+      capture_not_found(@product_id, Constants::PRODUCT_TYPE_NAME) do
+        Product.existing.for_user(user.id).find(@product_id)
+      end
     end
   end
 end

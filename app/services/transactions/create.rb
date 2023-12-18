@@ -14,11 +14,15 @@ module Transactions
 
     # @return [Transaction]
     def call
-      merchant = Merchants::Repository.get(@merchant_id, user_id: user.id)
+      merchant = capture_not_found(@merchant_id, Merchants::Constants::MERCHANT_TYPE_NAME) do
+        Merchant.existing.for_user(user.id).find(@merchant_id)
+      end
 
-      account = Accounts::Repository.get(@account_id, user_id: user.id)
+      account = capture_not_found(@account_id, Accounts::Constants::ACCOUNT_TYPE_NAME) do
+        Account.existing.for_user(user.id).find(@account_id)
+      end
 
-      Repository.create(
+      Transaction.create(
         date: @date,
         merchant_id: @merchant_id,
         account_id: @account_id,

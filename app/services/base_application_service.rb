@@ -6,6 +6,8 @@ class BaseApplicationService
 
   def self.call(*args, **kwargs, &block)
     new(*args, **kwargs, &block).call
+  rescue ActiveRecord::ActiveRecordError => error
+    raise ApplicationError.new("Unexpected error", [error.message])
   end
 
   def call
@@ -14,5 +16,11 @@ class BaseApplicationService
 
   def logger
     Rails.logger
+  end
+
+  def capture_not_found(id, type_name)
+    yield
+  rescue ActiveRecord::RecordNotFound
+    raise NotFoundError.new(id, type_name)
   end
 end

@@ -12,7 +12,9 @@ module Transactions
 
     # @return [Transaction]
     def call
-      transaction = Repository.get(@transaction_id, user_id: user.id)
+      transaction = capture_not_found(@transaction_id, Constants::TRANSACTION_TYPE_NAME) do
+        Transaction.for_user(user.id).includes(:line_items).find(@transaction_id)
+      end
 
       line_item = transaction.line_items.find { |li| li.product_id == @product_id }
 

@@ -6,7 +6,7 @@ module Merchants
       super(user)
     end
     def call
-      Merchants::Repository.list(user_id: user.id)
+      Merchant.existing.for_user(user.id)
     end
   end
 end

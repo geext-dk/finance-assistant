@@ -1,4 +1,6 @@
 class Product < ApplicationRecord
+    include UserOwned, Archivable
+
     belongs_to :user
 
     enum quantity_type: { per_piece: 0, weighted: 1 }
