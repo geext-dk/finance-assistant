@@ -28,5 +28,10 @@ module Types
     def total_price
       object.total_price_cents.to_f / (10 ** Common::CurrencyHelper.get_fraction_digits)
     end
+
+    field :product, Types::ProductType, null: false
+    def product
+      dataloader.with(Sources::ProductsByIds, user: context[:current_user], include_archived: true).load(object.product_id)
+    end
   end
 end
