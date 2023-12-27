@@ -9,7 +9,13 @@ module Merchants
     end
 
     def call
-      Merchant.create(name: @name, country: @country, user_id: user.id)
+      merchant = Merchant.create(name: @name, country: @country, user_id: user.id)
+
+      unless merchant.valid?
+        raise ApplicationError.new("Couldn't create merchant", merchant.errors.full_messages)
+      end
+
+      merchant
     end
   end
 end

@@ -8,7 +8,9 @@ module Transactions
     end
 
     def call
-      TransactionLineItem.where(owner_transaction_id: @transaction_ids)
+      TransactionLineItem.includes(:owner_transaction).where(
+        owner_transaction_id: @transaction_ids,
+        owner_transaction: { user_id: user.id })
     end
   end
 end

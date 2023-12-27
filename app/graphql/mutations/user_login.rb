@@ -9,7 +9,7 @@ module Mutations
     type Types::UserType
 
     def resolve(email:, password:)
-      user = Users::Login.call(email: email, password: password)
+      user = Users::Authenticate.call(email: email, password: password)
 
       context[:current_user] = Users::SessionUser.new(user.id)
 

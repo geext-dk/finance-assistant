@@ -14,7 +14,7 @@ class BaseAuthorizedUserService < BaseApplicationService
   end
 
   def self.call(*args, user:, **kwargs, &block)
-    if user.nil?
+    if user.nil? || user.id.blank?
       logger.warn "The user is not authorized to perform this operation (#{self.name})"
       raise ApplicationError.new("The user is not authorized to perform this operation")
     end

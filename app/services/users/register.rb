@@ -13,7 +13,16 @@ module Users
         raise ApplicationError.new("A user with email '#{@email}' already exists")
       end
 
-      User.create(email: @email, password: @password, password_confirmation: @password_confirmation)
+      user = User.create(email: @email, password: @password, password_confirmation: @password_confirmation)
+
+      unless user.valid?
+        raise ApplicationError.new("Couldn't create user", user.errors.full_messages)
+      end
+
+      UserDetails.new(
+        id: user.id,
+        email: user.email
+      )
     end
   end
 end

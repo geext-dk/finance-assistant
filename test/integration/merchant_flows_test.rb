@@ -52,14 +52,9 @@ mutation archiveMerchantMutation($id: ID!) {
 }
 '
 
-MERCHANT_ID = "a8a1ccc9-ad5d-47d2-a7f9-f14deeeaa001"
-
 class MerchantFlowsTest < ActionDispatch::IntegrationTest
-  setup do
-    sign_in_as_sample_user
-  end
-
   test "Should create merchant" do
+    sign_in_as_sample_user
     post "/graphql", params: {
       query: CREATE_MERCHANT_QUERY,
       variables: {
@@ -80,19 +75,25 @@ class MerchantFlowsTest < ActionDispatch::IntegrationTest
   end
 
   test "Should get merchant" do
-    post "/graphql", params: { query: GET_MERCHANT_QUERY, variables: { id: MERCHANT_ID } }, as: :json
+    user = sign_in_as_sample_user
+    sample_merchant = create(:merchant, user: user)
+
+    post "/graphql", params: { query: GET_MERCHANT_QUERY, variables: { id: sample_merchant.id } }, as: :json
     puts response.body
     assert_response :success
     assert_nil response.parsed_body&.[]("errors")
 
     merchant = response.parsed_body&.[]("data")&.[]("merchant")
     assert_not_nil merchant
-    assert_equal MERCHANT_ID, merchant["id"]
-    assert_equal "Sample merchant 1", merchant["name"]
-    assert_equal "SE", merchant["country"]
+    assert_equal sample_merchant.id, merchant["id"]
+    assert_equal sample_merchant.name, merchant["name"]
+    assert_equal sample_merchant.country, merchant["country"]
   end
 
   test "Should get all merchants" do
+    user = sign_in_as_sample_user
+    sample_merchant = create(:merchant, user: user)
+
     post "/graphql", params: { query: GET_MERCHANTS_LIST_QUERY }, as: :json
     puts response.body
     assert_response :success
@@ -102,20 +103,22 @@ class MerchantFlowsTest < ActionDispatch::IntegrationTest
     assert_not_nil merchants
     assert_not_empty merchants
 
-    merchants_by_id = merchants.select { |p| p["id"] == MERCHANT_ID }
+    merchants_by_id = merchants.select { |p| p["id"] == sample_merchant.id }
     assert_not_nil merchants_by_id
     assert_equal 1, merchants_by_id.length
 
     merchant_from_merchants = merchants_by_id[0]
-    assert_equal MERCHANT_ID, merchant_from_merchants["id"]
-    assert_equal "Sample merchant 1", merchant_from_merchants["name"]
-    assert_equal "SE", merchant_from_merchants["country"]
+    assert_equal sample_merchant.name, merchant_from_merchants["name"]
+    assert_equal sample_merchant.country, merchant_from_merchants["country"]
   end
 
   test "Should update and save merchant" do
+    user = sign_in_as_sample_user
+    sample_merchant = create(:merchant, user: user)
+
     post "/graphql", params: {
       query: UPDATE_MERCHANT_QUERY,
-      variables: { id: MERCHANT_ID, new_name: "New Sample merchant 1 name" }
+      variables: { id: sample_merchant.id, new_name: "New Sample merchant 1 name" }
     }, as: :json
     puts response.body
     assert_response :success
@@ -123,21 +126,24 @@ class MerchantFlowsTest < ActionDispatch::IntegrationTest
 
     merchant = response.parsed_body&.[]("data")&.[]("updateMerchant")
     assert_not_nil merchant
-    assert_equal MERCHANT_ID, merchant["id"]
+    assert_equal sample_merchant.id, merchant["id"]
     assert_equal "New Sample merchant 1 name", merchant["name"]
-    assert_equal "SE", merchant["country"]
+    assert_equal sample_merchant.country, merchant["country"]
 
     # Test that "GetMerchant" returns the new data
-    post "/graphql", params: { query: GET_MERCHANT_QUERY, variables: { id: MERCHANT_ID } }, as: :json
+    post "/graphql", params: { query: GET_MERCHANT_QUERY, variables: { id: sample_merchant.id } }, as: :json
 
     merchant = response.parsed_body["data"]["merchant"]
     assert_equal "New Sample merchant 1 name", merchant["name"]
   end
 
   test "Should archive merchant" do
+    user = sign_in_as_sample_user
+    sample_merchant = create(:merchant, user: user)
+
     post "/graphql", params: {
       query: ARCHIVE_MERCHANT_QUERY,
-      variables: { id: MERCHANT_ID }
+      variables: { id: sample_merchant.id }
     }, as: :json
     puts response.body
     assert_response :success
@@ -145,12 +151,12 @@ class MerchantFlowsTest < ActionDispatch::IntegrationTest
 
     merchant = response.parsed_body&.[]("data")&.[]("archiveMerchant")
     assert_not_nil merchant
-    assert_equal MERCHANT_ID, merchant["id"]
-    assert_equal "Sample merchant 1", merchant["name"]
-    assert_equal "SE", merchant["country"]
+    assert_equal sample_merchant.id, merchant["id"]
+    assert_equal sample_merchant.name, merchant["name"]
+    assert_equal sample_merchant.country, merchant["country"]
 
     # Test that "GetMerchant" does not return this merchant anymore
-    post "/graphql", params: { query: GET_MERCHANT_QUERY, variables: { id: MERCHANT_ID } }, as: :json
+    post "/graphql", params: { query: GET_MERCHANT_QUERY, variables: { id: sample_merchant.id } }, as: :json
     assert_response :success
     assert_not_nil response.parsed_body&.[]("data")
     assert_nil response.parsed_body["data"]["merchant"]

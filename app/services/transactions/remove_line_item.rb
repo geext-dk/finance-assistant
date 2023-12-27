@@ -18,10 +18,13 @@ module Transactions
 
       line_item = transaction.line_items.find { |li| li.product_id == @product_id }
 
-      unless line_item.nil?
-        transaction.line_items.destroy(line_item)
+      if line_item.nil?
+        raise NotFoundError.new(
+          @product_id, Constants::TRANSACTION_LINE_ITEM_TYPE_NAME,
+          message: "Couldn't find line item with product #{@product_id} in transaction #{@transaction_id}")
       end
-      # TODO add logging if line item was not deleted because it doesn't exist
+
+      transaction.line_items.destroy(line_item)
 
       transaction
     end

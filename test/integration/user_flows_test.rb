@@ -38,10 +38,12 @@ class UserFlowsTest < ActionDispatch::IntegrationTest
   end
 
   test "Should login" do
+    sample_user = create(:user)
+
     post "/graphql", params: {
       query: LOGIN_USER_MUTATION,
       variables: {
-        email: "test@example.com",
+        email: sample_user.email,
         password: "somepassword"
       }
     }
@@ -52,7 +54,7 @@ class UserFlowsTest < ActionDispatch::IntegrationTest
 
     user = response.parsed_body&.[]("data")&.[]("login")
     assert_not_nil user
-    assert_not_empty user["id"]
-    assert_equal "test@example.com", user["email"]
+    assert_equal sample_user.id, user["id"]
+    assert_equal sample_user.email, user["email"]
   end
 end

@@ -10,7 +10,13 @@ module Products
     end
 
     def call
-      Product.create(name: @name, country: @country, quantity_type: @quantity_type, user_id: user.id)
+      product = Product.create(name: @name, country: @country, quantity_type: @quantity_type, user_id: user.id)
+
+      unless product.valid?
+        raise ApplicationError.new("Couldn't create product", product.errors.full_messages)
+      end
+
+      product
     end
   end
 end

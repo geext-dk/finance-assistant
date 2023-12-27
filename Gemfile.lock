@@ -93,6 +93,11 @@ GEM
     drb (2.2.0)
       ruby2_keywords
     erubi (1.12.0)
+    factory_bot (6.4.2)
+      activesupport (>= 5.0.0)
+    factory_bot_rails (6.4.2)
+      factory_bot (~> 6.4)
+      railties (>= 5.0.0)
     ffi (1.16.3)
     ffi (1.16.3-x64-mingw-ucrt)
     globalid (1.2.1)
@@ -226,6 +231,7 @@ DEPENDENCIES
   bootsnap
   debug
   dockerfile-rails (>= 1.5)
+  factory_bot_rails (~> 6.4)
   graphiql-rails (~> 1.9)
   graphql (~> 2.1)
   minitest-stub-const (~> 0.6)

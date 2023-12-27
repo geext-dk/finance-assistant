@@ -2,6 +2,14 @@
 
 module Transactions
   class UpdateLineItem < BaseAuthorizedUserService
+    attr_accessor :transaction_id, :product_id, :quantity, :price, :discounted_price, :total_price
+
+    validates :transaction_id, presence: true
+    validates :product_id, presence: true
+    validates :quantity, numericality: { greater_than: 0 }
+    validates :price, presence: true
+    validates :total_price, presence: true
+
     def initialize(transaction_id:, product_id:, quantity:, price:, discounted_price:, total_price:, user:)
       super(user)
       @transaction_id = transaction_id
@@ -18,13 +26,16 @@ module Transactions
         Transaction.includes(:line_items).for_user(user.id).find(@transaction_id)
       end
 
-      line_item = transaction.line_items.find_by(product_id: @product_id)
+      line_item = transaction.line_items.find { |li| li.product_id == @product_id }
 
       if line_item.nil?
-        raise ApplicationError.new("Transaction #{@transaction_id} already has no line item for product #{@product_id}")
+        raise NotFoundError.new(
+          @product_id,
+          Constants::TRANSACTION_TYPE_NAME,
+          message: "Transaction #{@transaction_id} has no line item for product #{@product_id}")
       end
 
-      # TODO cover case when a product is archived but it wasn't changed - it should work but it won't
+      # TODO cover case when a product is archived but product wasn't changed - it should work but it won't
       product = capture_not_found(@product_id, Products::Constants::PRODUCT_TYPE_NAME) do
         Product.existing.for_user(user.id).find(@product_id)
       end
@@ -43,7 +54,7 @@ module Transactions
           transaction
         else
           raise ApplicationError.new(
-                  "Couldn't create a line item in transaction #{@transaction_id}",
+                  "Couldn't update line item with product #{@product_id} in transaction #{@transaction_id}",
                   line_item.errors.full_messages)
         end
       rescue ActiveRecord::ActiveRecordError => error

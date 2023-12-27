@@ -2,13 +2,21 @@
 
 module Transactions
   class AddLineItem < BaseAuthorizedUserService
+    attr_accessor :transaction_id, :product_id, :quantity, :price, :discounted_price, :total_price
+
+    validates :transaction_id, presence: true
+    validates :product_id, presence: true
+    validates :quantity, numericality: { greater_than: 0 }
+    validates :price, presence: true
+    validates :total_price, presence: true
+
     # @param [String] transaction_id
     # @param [String] product_id
     # @param [Numeric] quantity
     # @param [BigDecimal] price
     # @param [BigDecimal] discounted_price
     # @param [BigDecimal] total_price
-    def initialize(transaction_id:, product_id:, quantity:, price:, discounted_price:, total_price:, user:)
+    def initialize(transaction_id:, product_id:, quantity:, price:, discounted_price: nil, total_price:, user:)
       super(user)
       @transaction_id = transaction_id
       @product_id = product_id
@@ -20,6 +28,7 @@ module Transactions
 
     # @return [Transaction]
     def call
+
       transaction = capture_not_found(@transaction_id, Constants::TRANSACTION_TYPE_NAME) do
         Transaction.includes(:line_items).for_user(user.id).find(@transaction_id)
       end

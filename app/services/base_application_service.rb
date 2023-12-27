@@ -1,11 +1,19 @@
 # frozen_string_literal: true
 
 class BaseApplicationService
+  include ActiveModel::Validations
+
   def initialize(*args, **kwargs, &block)
   end
 
   def self.call(*args, **kwargs, &block)
-    new(*args, **kwargs, &block).call
+    obj = new(*args, **kwargs, &block)
+
+    unless obj.valid?
+      raise ApplicationError.new("Validation error", obj.errors.full_messages)
+    end
+
+    obj.call
   rescue ActiveRecord::ActiveRecordError => error
     raise ApplicationError.new("Unexpected error", [error.message])
   end
@@ -15,6 +23,10 @@ class BaseApplicationService
   end
 
   def logger
+    self.class.logger
+  end
+
+  def self.logger
     Rails.logger
   end
 
