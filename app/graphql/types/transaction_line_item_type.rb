@@ -12,13 +12,13 @@ module Types
 
     field :price, Float, null: false
     def price
-      object.price_cents.to_f / (10 ** Common::CurrencyHelper.get_fraction_digits)
+      (object.price_cents.to_f / (10 ** Common::CurrencyHelper.get_fraction_digits)).round(2)
     end
 
     field :discounted_price, Float
     def discounted_price
       if object.discounted_price_cents.present?
-        object.discounted_price_cents.to_f / (10 ** Common::CurrencyHelper.get_fraction_digits)
+        (object.discounted_price_cents.to_f / (10 ** Common::CurrencyHelper.get_fraction_digits)).round(2)
       else
         nil
       end
@@ -26,7 +26,7 @@ module Types
 
     field :total_price, Float, null: false
     def total_price
-      object.total_price_cents.to_f / (10 ** Common::CurrencyHelper.get_fraction_digits)
+      (object.total_price_cents.to_f / (10 ** Common::CurrencyHelper.get_fraction_digits)).round(2)
     end
 
     field :product, Types::ProductType, null: false

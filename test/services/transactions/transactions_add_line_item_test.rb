@@ -159,7 +159,7 @@ class TransactionsAddLineItemTest < ActiveSupport::TestCase
     # Act & Assert
     assert_raises ApplicationError do
       Transactions::AddLineItem::call(
-        user: Users::SessionUser.new("some-user"),
+        user: Users::SessionUser.new(transaction.user.id),
         transaction_id: transaction.id,
         product_id: product.id,
         quantity: 0,
@@ -200,5 +200,23 @@ class TransactionsAddLineItemTest < ActiveSupport::TestCase
         price: 1,
         total_price: nil)
     end
+  end
+
+  test "Should correctly round" do
+    # Arrange
+    transaction = create(:transaction)
+    product = create(:product, user: transaction.user)
+
+    # Act
+    result = Transactions::AddLineItem::call(
+        user: Users::SessionUser.new(transaction.user.id),
+        transaction_id: transaction.id,
+        product_id: product.id,
+        quantity: 1,
+        price: 1190.37,
+        total_price: 2)
+
+    # Assert
+    assert_equal result.line_items[0].price_cents, 119037
   end
 end

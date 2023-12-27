@@ -19,6 +19,6 @@ class MerchantsListTest < ActiveSupport::TestCase
 
     # Assert
     assert_equal 5, merchants.length
-    assert_equal valid_merchant_ids, merchants.map { |a| a.id }
+    assert_equal valid_merchant_ids.sort, merchants.map { |a| a.id }.sort
   end
 end

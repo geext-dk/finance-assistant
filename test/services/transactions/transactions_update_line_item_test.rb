@@ -136,4 +136,23 @@ class TransactionsUpdateLineItemTest < ActiveSupport::TestCase
       )
     end
   end
+
+  test "Should correctly round" do
+    # Arrange
+    sample_transaction = create(:transaction)
+    line_item = create(:transaction_line_item, owner_transaction: sample_transaction)
+
+    # Act
+    result = Transactions::UpdateLineItem::call(
+        user: Users::SessionUser.new(sample_transaction.user.id),
+        transaction_id: sample_transaction.id,
+        product_id: line_item.product_id,
+        quantity: 7,
+        price: 1190.37,
+        total_price: 1
+      )
+
+    # Assert
+    assert_equal result.line_items[0].price_cents, 119037
+  end
 end

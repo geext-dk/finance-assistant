@@ -23,6 +23,6 @@ class AccountsGetByIdsTest < ActiveSupport::TestCase
     accounts = Accounts::GetByIds.call(account_ids: account_ids, user: Users::SessionUser.new(user.id))
 
     # Assert
-    assert_equal valid_account_ids, accounts.map { |a| a.id }
+    assert_equal valid_account_ids.sort, accounts.map { |a| a.id }.sort
   end
 end

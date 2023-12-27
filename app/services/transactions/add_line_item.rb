@@ -51,9 +51,9 @@ module Transactions
           product_id: @product_id,
           quantity_weighted: product.per_piece? ? nil : @quantity,
           quantity_pieces: product.per_piece? ? @quantity.to_i : nil,
-          price_cents: (@price * (10 ** fraction_digits)).to_i,
-          discounted_price_cents: @discounted_price ? (@discounted_price * (10 ** fraction_digits)).to_i : nil,
-          total_price_cents: (@total_price * (10 ** fraction_digits)).to_i)
+          price_cents: (@price * (10 ** fraction_digits)).round,
+          discounted_price_cents: (@discounted_price.nil? ? nil : (@discounted_price * (10 ** fraction_digits)).round),
+          total_price_cents: (@total_price * (10 ** fraction_digits)).round)
 
         if new_line_item.valid?
           transaction

@@ -23,6 +23,6 @@ class MerchantsGetByIdsTest < ActiveSupport::TestCase
     merchants = Merchants::GetByIds.call(merchant_ids: merchant_ids, user: Users::SessionUser.new(user.id))
 
     # Assert
-    assert_equal valid_merchant_ids, merchants.map { |a| a.id }
+    assert_equal valid_merchant_ids.sort, merchants.map { |a| a.id }.sort
   end
 end

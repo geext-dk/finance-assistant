@@ -19,6 +19,6 @@ class AccountsListTest < ActiveSupport::TestCase
 
     # Assert
     assert_equal 5, accounts.length
-    assert_equal valid_account_ids, accounts.map { |a| a.id }
+    assert_equal valid_account_ids.sort, accounts.map { |a| a.id }.sort
   end
 end

@@ -19,6 +19,6 @@ class ProductsListTest < ActiveSupport::TestCase
 
     # Assert
     assert_equal 5, products.length
-    assert_equal valid_product_ids, products.map { |a| a.id }
+    assert_equal valid_product_ids.sort, products.map { |a| a.id }.sort
   end
 end

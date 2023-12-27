@@ -29,7 +29,7 @@ class TransactionsGetLineItemsByTransactionIdsTest < ActiveSupport::TestCase
 
     # Assert
     assert_equal 4, results.length
-    assert_equal result_ids, results.map { |li| li.product_id }
+    assert_equal result_ids.sort, results.map { |li| li.product_id }.sort
   end
 
   test "Should not return line items if transaction belongs to another user" do

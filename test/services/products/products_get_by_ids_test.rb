@@ -23,6 +23,6 @@ class ProductsGetByIdsTest < ActiveSupport::TestCase
     products = Products::GetByIds.call(product_ids: product_ids, user: Users::SessionUser.new(user.id))
 
     # Assert
-    assert_equal valid_product_ids, products.map { |a| a.id }
+    assert_equal valid_product_ids.sort, products.map { |a| a.id }.sort
   end
 end

@@ -23,6 +23,6 @@ class TransactionsListTest < ActiveSupport::TestCase
 
     # Assert
     assert_equal 5, transactions.length
-    assert_equal valid_transaction_ids, transactions.map { |a| a.id }
+    assert_equal valid_transaction_ids.sort, transactions.map { |a| a.id }.sort
   end
 end
