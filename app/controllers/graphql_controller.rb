@@ -11,10 +11,7 @@ class GraphqlController < ApplicationController
     query = params[:query]
     operation_name = params[:operationName]
     context = {
-      # Query context goes here, for example:
-      # current_user: current_user,
-      # TODO add cache and check for existence
-      current_user: session[:user_id] ? Users::SessionUser.new(session[:user_id]) : nil
+      current_user: get_current_user
     }
     result = FinanceAssistantSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
 
@@ -57,5 +54,24 @@ class GraphqlController < ApplicationController
     logger.error e.backtrace.join("\n")
 
     render json: { errors: [{ message: e.message, backtrace: e.backtrace }], data: {} }, status: 500
+  end
+
+  def get_current_user
+    user_id = session[:user_id]
+
+    unless user_id
+      return nil
+    end
+
+    user_exists = Rails.cache.fetch("user-#{user_id}-exists", expires_in: 1.hour) do
+      User.exists?(user_id)
+    end
+
+    if user_exists
+      Users::SessionUser.new(user_id)
+    else
+      reset_session
+      nil
+    end
   end
 end

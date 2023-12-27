@@ -2,14 +2,6 @@ ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
 require "rails/test_help"
 
-LOGIN_USER_MUTATION = '
-mutation login($email: String!, $password: String!) {
-  login(input: { email: $email, password: $password }) {
-    id
-  }
-}
-'
-
 module ActiveSupport
   class TestCase
     include FactoryBot::Syntax::Methods
@@ -25,7 +17,12 @@ module ActiveSupport
       user = create(:user)
 
       post "/graphql", params: {
-        query: LOGIN_USER_MUTATION,
+        query: '
+mutation login($email: String!, $password: String!) {
+  login(input: { email: $email, password: $password }) {
+    id
+  }
+}',
         variables: {
           email: user.email,
           password: "somepassword"

@@ -249,16 +249,16 @@ class TransactionFlowsTest < ActionDispatch::IntegrationTest
     product_pieces = transaction["lineItems"].find { |p| p["productId"] == sample_product_pieces.id }
     assert_not_nil product_pieces
     assert_equal line_item_pieces.quantity_pieces, product_pieces["quantity"]
-    assert_equal line_item_pieces.price_cents, product_pieces["price"] * 100
+    assert_equal line_item_pieces.price_cents, (product_pieces["price"] * 100).round
     assert_nil product_pieces["discountedPrice"]
-    assert_equal line_item_pieces.total_price_cents, product_pieces["totalPrice"] * 100
+    assert_equal line_item_pieces.total_price_cents, (product_pieces["totalPrice"] * 100).round
 
     product_weighted = transaction["lineItems"].find { |p| p["productId"] == sample_product_weighted.id }
     assert_not_nil product_weighted
     assert_equal line_item_weighted.quantity_weighted, product_weighted["quantity"]
-    assert_equal line_item_weighted.price_cents, product_weighted["price"] * 100
-    assert_equal line_item_weighted.discounted_price_cents, product_weighted["discountedPrice"] * 100
-    assert_equal line_item_weighted.total_price_cents, product_weighted["totalPrice"] * 100
+    assert_equal line_item_weighted.price_cents, (product_weighted["price"] * 100).round
+    assert_equal line_item_weighted.discounted_price_cents, (product_weighted["discountedPrice"] * 100).round
+    assert_equal line_item_weighted.total_price_cents, (product_weighted["totalPrice"] * 100).round
   end
 
   test "Should get all transactions" do
@@ -311,16 +311,16 @@ class TransactionFlowsTest < ActionDispatch::IntegrationTest
     product_pieces = transaction2["lineItems"].find { |p| p["productId"] == sample_product_pieces.id }
     assert_not_nil product_pieces
     assert_equal line_item_pieces.quantity_pieces, product_pieces["quantity"]
-    assert_equal line_item_pieces.price_cents, product_pieces["price"] * 100
+    assert_equal line_item_pieces.price_cents, (product_pieces["price"] * 100).round
     assert_nil product_pieces["discountedPrice"]
-    assert_equal line_item_pieces.total_price_cents, product_pieces["totalPrice"] * 100
+    assert_equal line_item_pieces.total_price_cents, (product_pieces["totalPrice"] * 100).round
 
     product_weighted = transaction2["lineItems"].find { |p| p["productId"] == sample_product_weighted.id }
     assert_not_nil product_weighted
     assert_equal line_item_weighted.quantity_weighted, product_weighted["quantity"]
-    assert_equal line_item_weighted.price_cents, product_weighted["price"] * 100
-    assert_equal line_item_weighted.discounted_price_cents, product_weighted["discountedPrice"] * 100
-    assert_equal line_item_weighted.total_price_cents, product_weighted["totalPrice"] * 100
+    assert_equal line_item_weighted.price_cents, (product_weighted["price"] * 100).round
+    assert_equal line_item_weighted.discounted_price_cents, (product_weighted["discountedPrice"] * 100).round
+    assert_equal line_item_weighted.total_price_cents, (product_weighted["totalPrice"] * 100).round
   end
 
   test "Should update and save transaction" do
