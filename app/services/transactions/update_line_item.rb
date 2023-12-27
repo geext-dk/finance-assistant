@@ -35,9 +35,8 @@ module Transactions
           message: "Transaction #{@transaction_id} has no line item for product #{@product_id}")
       end
 
-      # TODO cover case when a product is archived but product wasn't changed - it should work but it won't
       product = capture_not_found(@product_id, Products::Constants::PRODUCT_TYPE_NAME) do
-        Product.existing.for_user(user.id).find(@product_id)
+        Product.for_user(user.id).find(@product_id)
       end
 
       fraction_digits = Common::CurrencyHelper.get_fraction_digits

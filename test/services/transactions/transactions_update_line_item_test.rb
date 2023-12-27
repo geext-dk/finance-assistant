@@ -155,4 +155,23 @@ class TransactionsUpdateLineItemTest < ActiveSupport::TestCase
     # Assert
     assert_equal result.line_items[0].price_cents, 119037
   end
+
+  test "Shouldn't raise if product was archived" do
+    # Arrange
+    sample_transaction = create(:transaction)
+    product = create(:product, archived_at: Time.now.utc, user: sample_transaction.user)
+    line_item = create(:transaction_line_item, owner_transaction: sample_transaction, product: product)
+
+    # Act
+    assert_nothing_raised do
+      Transactions::UpdateLineItem::call(
+      user: Users::SessionUser.new(sample_transaction.user.id),
+      transaction_id: sample_transaction.id,
+      product_id: line_item.product_id,
+      quantity: 7,
+      price: 1190.37,
+      total_price: 1
+    )
+    end
+  end
 end
